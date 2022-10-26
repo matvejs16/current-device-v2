@@ -64,10 +64,10 @@ ctx.fillRect(20,12,100,5);
 
 // hashing function
 let src = canvas.toDataURL();
-hash = 0;
+let hash = 0;
 
 for (i = 0; i < src.length; i++) {
-	char = src.charCodeAt(i);
+	let char = src.charCodeAt(i);
 	hash = ((hash<<5)-hash)+char;
 	hash = hash & hash;
 }
