@@ -63,7 +63,7 @@ ctx.shadowColor="red";
 ctx.fillRect(20,12,100,5);
 
 // hashing function
-src = canvas.toDataURL();
+let src = canvas.toDataURL();
 hash = 0;
 
 for (i = 0; i < src.length; i++) {
