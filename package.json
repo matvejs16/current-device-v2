@@ -1,7 +1,7 @@
 {
-  "name": "current-device",
+  "name": "current-device-v2",
   "version": "0.10.2",
-  "homepage": "https://github.com/matthewhudson/current-device",
+  "homepage": "https://github.com/matvejs16/current-device-v2",
   "description": "The easiest way to write conditional CSS and/or JavaScript based on device operating system (iOS, Android, Blackberry, Windows, Firefox OS, MeeGo, AppleTV, etc), orientation (Portrait vs. Landscape), and type (Tablet vs. Mobile).",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -15,22 +15,18 @@
     "test": "nwb test"
   },
   "devDependencies": {
-    "eslint": "7.29.0",
-    "eslint-plugin-import": "2.23.4",
-    "nwb": "0.23.0",
-    "prettier": "2.3.2"
+    "eslint": "8.26.0",
+    "eslint-plugin-import": "2.26.0",
+    "nwb": "0.25.2",
+    "prettier": "2.7.1"
   },
-  "author": {
-    "name": "Matthew Hudson",
-    "email": "matthud@gmail.com",
-    "url": "https://hudson.dev"
-  },
+  "author": "Matvej Makushin <matvejs16@genrem.eu>",
   "repository": {
     "type": "git",
-    "url": "git://github.com/matthewhudson/current-device.git"
+    "url": "git://github.com/matvejs16/current-device-v2.git"
   },
   "bugs": {
-    "url": "https://github.com/matthewhudson/current-device/issues"
+    "url": "https://github.com/matvejs16/current-device-v2/issues"
   },
   "license": "MIT",
   "types": "lib/types/index.d.ts"
