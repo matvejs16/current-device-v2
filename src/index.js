@@ -50,7 +50,7 @@ ctx.fill();
 ctx.stroke();   
 ctx.closePath();
 
-txt = 'abz190#$%^@£éú';
+let txt = 'abz190#$%^@£éú';
 ctx.textBaseline = "top";
 ctx.font = '17px "Arial 17"';
 ctx.textBaseline = "alphabetic";
