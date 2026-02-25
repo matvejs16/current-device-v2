@@ -145,7 +145,7 @@
       color: var(--text);
       background: var(--surface);
       margin-bottom: 24px;
-      transition: all 0.3s ease;
+      transition: border-color 0.3s ease;
     }
 
     .install-bar {
@@ -367,6 +367,18 @@
       opacity: 1;
     }
 
+    /* ── Accessibility ── */
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero,
+      .detection-panel,
+      .how-it-works,
+      .quick-start,
+      .footer {
+        animation: none;
+      }
+    }
+
     /* ── Responsive ── */
 
     @media (max-width: 480px) {
@@ -541,8 +553,11 @@ console.log(device.orientation) // 'portrait' or 'landscape'</code></pre>
 
       // Live orientation update
       device.onChangeOrientation(function (newOrientation) {
-        parts[parts.length - 1] = newOrientation;
-        pill.textContent = parts.join(' \u00B7 ');
+        var updated = [];
+        if (device.os !== 'unknown') updated.push(device.os);
+        if (device.type !== 'unknown') updated.push(device.type);
+        updated.push(newOrientation);
+        pill.textContent = updated.join(' \u00B7 ');
       });
 
       // Tab switching for Quick Start
