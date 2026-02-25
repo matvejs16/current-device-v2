@@ -1,212 +1,562 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>current-device</title>
-    <style>
-      html, body {
-        min-height:100%;
-        height:100%;
-      }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>current-device — Browser Device Detection</title>
+  <meta name="description" content="Lightweight device detection for CSS and JavaScript — OS, type, and orientation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAFBFE;
+      --surface: #FFFFFF;
+      --text: #1A1D26;
+      --text-secondary: #6B7084;
+      --accent: #3B82F6;
+      --accent-subtle: #EFF6FF;
+      --detected: #10B981;
+      --detected-subtle: #ECFDF5;
+      --code-bg: #F1F5F9;
+      --border: #E2E8F0;
+      --font-display: 'DM Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
 
-      html {
-        padding: 30px 10px;
-        font-size: 20px;
-        line-height: 1.4;
-        color: #737373;
-        background: #f0f0f0;
-        -webkit-text-size-adjust: 100%;
-        -ms-text-size-adjust: 100%;
-      }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-      html,
-      input {
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      }
+    body {
+      font-family: var(--font-display);
+      color: var(--text);
+      background: var(--bg);
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 80px 24px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
+    /* ── Typography ── */
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.15s ease;
+    }
+
+    a:hover {
+      opacity: 0.75;
+    }
+
+    code {
+      font-family: var(--font-mono);
+    }
+
+    /* ── Animations ── */
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero {
+      animation: fadeInUp 0.5s ease both;
+    }
+
+    .detection-panel {
+      animation: fadeInUp 0.5s ease 0.08s both;
+    }
+
+    .how-it-works {
+      animation: fadeInUp 0.5s ease 0.16s both;
+    }
+
+    .quick-start {
+      animation: fadeInUp 0.5s ease 0.24s both;
+    }
+
+    .footer {
+      animation: fadeInUp 0.5s ease 0.32s both;
+    }
+
+    /* ── Hero ── */
+
+    .hero {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+
+    .hero h1 {
+      margin-bottom: 12px;
+    }
+
+    .tagline {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 480px;
+      margin: 0 auto 24px;
+      line-height: 1.5;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--surface);
+      margin-bottom: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .install-bar {
+      margin-bottom: 20px;
+    }
+
+    .install-bar code {
+      display: inline-block;
+      background: var(--code-bg);
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: var(--text);
+      user-select: all;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* ── Detection Panel ── */
+
+    .detection-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 32px;
+      margin-bottom: 56px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
+    }
+
+    .detection-note {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .detection-note code {
+      font-size: 0.82rem;
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .detection-group {
+      margin-bottom: 24px;
+    }
+
+    .detection-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      background: var(--bg);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Detection highlight — CSS class cascade */
+    .mobile .badge.mobile,
+    .tablet .badge.tablet,
+    .desktop .badge.desktop,
+    .portrait .badge.portrait,
+    .landscape .badge.landscape,
+    .ios .badge.ios,
+    .iphone .badge.iphone,
+    .ipad .badge.ipad,
+    .ipod .badge.ipod,
+    .android .badge.android,
+    .blackberry .badge.blackberry,
+    .macos .badge.macos,
+    .windows .badge.windows,
+    .fxos .badge.fxos,
+    .meego .badge.meego,
+    .television .badge.television {
+      background: var(--detected-subtle);
+      color: var(--detected);
+      border-color: var(--detected);
+      font-weight: 500;
+    }
+
+    /* ── How It Works ── */
+
+    .how-it-works {
+      margin-bottom: 56px;
+    }
+
+    .how-it-works > h2 {
+      margin-bottom: 24px;
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .column h3 {
+      margin-bottom: 12px;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    pre code {
+      font-size: 0.78rem;
+      line-height: 1.65;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Quick Start ── */
+
+    .quick-start {
+      margin-bottom: 56px;
+    }
+
+    .quick-start > h2 {
+      margin-bottom: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+
+    .tab {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 10px 18px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.15s ease, border-color 0.15s ease;
+      margin-bottom: -1px;
+    }
+
+    .tab:hover {
+      color: var(--text);
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tab-content pre {
+      margin-bottom: 12px;
+    }
+
+    .tab-content pre:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Footer ── */
+
+    .footer {
+      text-align: center;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    .footer a {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .footer a:hover {
+      color: var(--text);
+      opacity: 1;
+    }
+
+    /* ── Responsive ── */
+
+    @media (max-width: 480px) {
       body {
-        padding: 30px 20px 50px;
-        margin: 0 auto;
+        padding: 48px 16px;
       }
 
       h1 {
-        margin: 10px 0px;
-        font-size: 50px;
-        text-align: center;
-        color:#222;
+        font-size: 2rem;
       }
 
-      h4 {
-        text-align: center;
-        color: #333;
+      .detection-panel {
+        padding: 24px 20px;
       }
 
-      p {
-        margin: 1em 0;
+      .hero-pill {
+        font-size: 0.82rem;
+        padding: 7px 16px;
       }
+    }
+  </style>
+</head>
+<body>
+  <!-- HERO -->
+  <header class="hero">
+    <h1>current-device</h1>
+    <p class="tagline">Lightweight device detection for CSS and JavaScript — OS, type, and orientation.</p>
+    <div class="hero-pill" id="hero-pill">
+      <!-- Populated by JS: e.g. "macOS · Desktop · Landscape" -->
+    </div>
+    <div class="install-bar">
+      <code>npm install current-device</code>
+    </div>
+    <nav class="hero-links">
+      <a href="https://github.com/matthewhudson/current-device">GitHub</a>
+      <a href="https://www.npmjs.com/package/current-device">npm</a>
+    </nav>
+  </header>
 
-      .container-outer {
-        width: 100%;
-        padding: 0;
-        display: table;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin: 0;
-      }
+  <!-- LIVE DETECTION PANEL -->
+  <section class="detection-panel">
+    <h2>Your Device</h2>
+    <p class="detection-note">These CSS classes are automatically added to <code>&lt;html&gt;</code> on import.</p>
 
-      .container-middle {
-        padding: 0;
-        vertical-align: middle;
-        display: table-cell;
-        margin: 0;
-      }
-
-      .container-inner {
-        width: 500px;
-        margin: 0 auto;
-      }
-
-      .content {
-        text-align: left;
-        padding: 10px 35px;
-        border: 1px solid #b3b3b3;
-        border-radius: 4px;
-        box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff;
-        background-color:#fafafa;
-        background-image: -moz-radial-gradient(50% 35%, ellipse cover, #FAF7F7, #fffde8 100%);
-        background-image: -webkit-radial-gradient(50% 35%, ellipse cover, #FAF7F7, #fffde8 100%);
-        background-image: -o-radial-gradient(50% 35%, ellipse cover, #FAF7F7, #fffde8 100%);
-        background-image: -ms-radial-gradient(50% 35%, ellipse cover, #FAF7F7, #fffde8 100%);
-        background-image: radial-gradient(50% 35%, ellipse cover, #FAF7F7, #fffde8 100%);
-      }
-
-      p.footer {
-        text-align:center;
-        font-size:0.75em;
-      }
-
-      p.footer a,
-      p.footer a:visited
-      p.footer a:active {
-        color:#424242;
-        text-decoration:none;
-        font-weight:bold;
-      }
-
-      p.footer a:hover {
-        text-decoration:underline;
-      }
-      .mobile .mobile,
-      .tablet .tablet,
-      .desktop .desktop,
-      .portrait .portrait,
-      .landscape .landscape,
-      .ios .ios,
-      .iphone .iphone,
-      .ipad .ipad,
-      .ipod .ipod,
-      .android .android,
-      .blackberry .blackberry,
-      .macos .macos,
-      .windows .windows,
-      .fxos .fxos,
-      .meego .meego,
-      .television .television {
-        background: green;
-        color: #FFF;
-      }
-      span {
-        display: block;
-        padding: 2px 15px;
-      }
-      h2 {
-        margin: 0;
-      }
-      .content {
-        padding: 25px 35px;
-      }
-      iframe {
-        display: block;
-        margin: 0 auto;
-        margin-bottom: 1em;
-        width: 270px !important;
-        margin-top: 10px;
-      }
-    </style>
-  </head>
-  <body>
-
-    <div class="container-outer">
-      <div class="container-middle">
-        <div class="container-inner">
-          <div class="content">
-            <h2>Device Type</h2>
-            <span class="mobile">.mobile</span>
-            <span class="tablet">.tablet</span>
-            <span class="desktop">.desktop</span>
-
-
-            <h2>Orientation</h2>
-            <span class="portrait">.portrait</span>
-            <span class="landscape">.landscape</span>
-
-            <h2>Device OS</h2>
-            <span class="ios">.ios</span>
-            <span class="iphone">.iphone</span>
-            <span class="ipad">.ipad</span>
-            <span class="ipod">.ipod</span>
-            <span class="android">.android</span>
-            <span class="blackberry">.blackberry</span>
-            <span class="macos">.macos</span>
-            <span class="windows">.windows</span>
-            <span class="fxos">.fxos</span>
-            <span class="meego">.meego</span>
-            <span class="television">.television</span>
-          </div>
-          <p class="footer">
-          Created by <a href="http://thematthewhudson.com/">Matthew Hudson</a> &mdash;
-          Download <a href="http://github.com/matthewhudson/current-device">current-device on Github</a>
-          <a href="https://twitter.com/matthewgh" class="twitter-follow-button" data-show-count="true" data-size="large" data-dnt="true">Follow @matthewgh</a>
-          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-        </div>
+    <div class="detection-group">
+      <h3>Type</h3>
+      <div class="badges">
+        <span class="badge mobile">mobile</span>
+        <span class="badge tablet">tablet</span>
+        <span class="badge desktop">desktop</span>
       </div>
     </div>
 
-    <script src="https://unpkg.com/current-device/umd/current-device.min.js"></script>
+    <div class="detection-group">
+      <h3>Operating System</h3>
+      <div class="badges">
+        <span class="badge ios">ios</span>
+        <span class="badge iphone">iphone</span>
+        <span class="badge ipad">ipad</span>
+        <span class="badge ipod">ipod</span>
+        <span class="badge android">android</span>
+        <span class="badge blackberry">blackberry</span>
+        <span class="badge macos">macos</span>
+        <span class="badge windows">windows</span>
+        <span class="badge fxos">fxos</span>
+        <span class="badge meego">meego</span>
+        <span class="badge television">television</span>
+      </div>
+    </div>
 
-    <script type="text/javascript">
-      console.log("device.portrait() === %s", device.portrait());
-      console.log("device.landscape() === %s", device.landscape());
-      console.log("device.mobile() === %s", device.mobile());
-      console.log("device.tablet() === %s", device.tablet());
-      console.log("device.ipad() === %s", device.ipad());
-      console.log("device.ipod() === %s", device.ipod());
-      console.log("device.iphone() === %s", device.iphone());
-      console.log("device.android() === %s", device.android());
-      console.log("device.androidTablet() === %s", device.androidTablet());
-      console.log("device.blackberryTablet() === %s", device.blackberryTablet());
-      console.log("device.fxos() === %s", device.fxos());
-      console.log("device.fxosPhone() === %s", device.fxosPhone());
-      console.log("device.fxosTablet() === %s", device.fxosTablet());
-      console.log("device.meego() === %s", device.meego());
-      console.log("device.television() === %s", device.television());
+    <div class="detection-group">
+      <h3>Orientation</h3>
+      <div class="badges" id="orientation-badges">
+        <span class="badge portrait">portrait</span>
+        <span class="badge landscape">landscape</span>
+      </div>
+    </div>
+  </section>
 
-      device.onChangeOrientation(function (newOrientation) {
-        console.log("New orientation is " + newOrientation);
-      });
-    </script>
-    
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-115899182-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="columns">
+      <div class="column">
+        <h3>CSS Classes</h3>
+        <pre><code>/* Applied automatically to &lt;html&gt; */
+.desktop { /* desktop styles */ }
+.mobile  { /* mobile styles */ }
+.portrait  { /* ... */ }
+.landscape { /* ... */ }</code></pre>
+      </div>
+      <div class="column">
+        <h3>JavaScript API</h3>
+        <pre><code>import device from 'current-device'
+
+device.mobile()  // boolean
+device.desktop() // boolean
+device.os        // 'macos', 'ios', ...
+device.type      // 'mobile', 'tablet', ...</code></pre>
+      </div>
+      <div class="column">
+        <h3>Orientation</h3>
+        <pre><code>device.onChangeOrientation(
+  (newOrientation) =&gt; {
+    console.log(newOrientation)
+    // 'portrait' or 'landscape'
+  }
+)</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK START -->
+  <section class="quick-start">
+    <h2>Quick Start</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="esm">ESM (Recommended)</button>
+      <button class="tab" data-tab="script">Script Tag</button>
+    </div>
+    <div class="tab-content active" id="tab-esm">
+      <pre><code>npm install current-device</code></pre>
+      <pre><code>import device from 'current-device'
+
+if (device.mobile()) {
+  // Mobile-specific logic
+}
+
+console.log(device.type)        // 'mobile', 'tablet', or 'desktop'
+console.log(device.os)          // 'ios', 'android', 'macos', ...
+console.log(device.orientation) // 'portrait' or 'landscape'</code></pre>
+    </div>
+    <div class="tab-content" id="tab-script">
+      <pre><code>&lt;script src="https://unpkg.com/current-device"&gt;&lt;/script&gt;</code></pre>
+      <pre><code>&lt;script&gt;
+  if (device.mobile()) {
+    // Mobile-specific logic
+  }
+
+  console.log(device.type)        // 'mobile', 'tablet', or 'desktop'
+  console.log(device.os)          // 'ios', 'android', 'macos', ...
+  console.log(device.orientation) // 'portrait' or 'landscape'
+&lt;/script&gt;</code></pre>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>
+      Created by <a href="https://github.com/matthewhudson">Matthew Hudson</a>
+      &middot; <a href="https://github.com/matthewhudson/current-device">GitHub</a>
+      &middot; <a href="https://www.npmjs.com/package/current-device">npm</a>
+      &middot; MIT License
+    </p>
+  </footer>
+
+  <script src="https://unpkg.com/current-device"></script>
+  <script>
+    (function () {
+      // Populate hero pill with detected values
+      var pill = document.getElementById('hero-pill');
+      var parts = [];
+      if (device.os !== 'unknown') {
+        parts.push(device.os);
       }
-      gtag("js", new Date());
-      gtag("config", "UA-115899182-1");
-    </script>
+      if (device.type !== 'unknown') {
+        parts.push(device.type);
+      }
+      if (device.orientation !== 'unknown') {
+        parts.push(device.orientation);
+      }
+      pill.textContent = parts.join(' \u00B7 ');
 
-  </body>
+      // Live orientation update
+      device.onChangeOrientation(function (newOrientation) {
+        parts[parts.length - 1] = newOrientation;
+        pill.textContent = parts.join(' \u00B7 ');
+      });
+
+      // Tab switching for Quick Start
+      var tabs = document.querySelectorAll('.tab');
+      var contents = document.querySelectorAll('.tab-content');
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          tabs.forEach(function (t) { t.classList.remove('active'); });
+          contents.forEach(function (c) { c.classList.remove('active'); });
+          tab.classList.add('active');
+          document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        });
+      });
+    })();
+  </script>
+</body>
 </html>
