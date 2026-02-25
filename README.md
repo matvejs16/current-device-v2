@@ -18,15 +18,15 @@ This module inserts CSS classes into the `<html>` element.
 
 #### iPhone
 
-<img src="https://raw.githubusercontent.com/matthewhudson/current-device/master/docs/iphone.png" />
+<img src="https://raw.githubusercontent.com/matthewhudson/current-device/main/docs/iphone.png" />
 
 #### Android Tablet
 
-<img src="https://raw.githubusercontent.com/matthewhudson/current-device/master/docs/android.png" />
+<img src="https://raw.githubusercontent.com/matthewhudson/current-device/main/docs/android.png" />
 
 #### Blackberry Tablet
 
-<img src="https://raw.githubusercontent.com/matthewhudson/current-device/master/docs/blackberry.png" />
+<img src="https://raw.githubusercontent.com/matthewhudson/current-device/main/docs/blackberry.png" />
 
 ### DEVICE SUPPORT
 
