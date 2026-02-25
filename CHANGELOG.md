@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - BREAKING
+## 1.0.0 (2026-02-24) - BREAKING
 
 ### Changed
 

@@ -10,6 +10,8 @@ This is a widely-used public package. Follow semver strictly: breaking changes r
 - `pnpm run typecheck` — check types with tsc --noEmit
 - `pnpm run test:watch` — run tests in watch mode
 - `pnpm run test:coverage` — run tests with coverage report
+- `pnpm changeset` — create a changeset describing your changes (run before committing)
+- `pnpm changeset status` — check pending changesets
 
 ## Architecture
 
@@ -26,6 +28,7 @@ This is a widely-used public package. Follow semver strictly: breaking changes r
 - Node.js >= 22
 - Dual CJS/ESM via package.json exports field
 - CI: GitHub Actions (.github/workflows/ci.yml)
+- Releases: Changesets (.changeset/) — run `pnpm changeset` to describe changes, the release.yml workflow handles versioning and npm publish on merge to main
 
 ## Gotchas
 

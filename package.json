@@ -1,6 +1,6 @@
 {
   "name": "current-device",
-  "version": "0.10.2",
+  "version": "1.0.0",
   "homepage": "https://github.com/matthewhudson/current-device",
   "description": "The easiest way to write conditional CSS and/or JavaScript based on device operating system (iOS, Android, Blackberry, Windows, Firefox OS, MeeGo, AppleTV, etc), orientation (Portrait vs. Landscape), and type (Tablet vs. Mobile).",
   "main": "dist/index.js",
@@ -27,9 +27,13 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "changeset": "changeset",
+    "release": "pnpm run build && changeset publish"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "0.5.2",
+    "@changesets/cli": "2.29.8",
     "jsdom": "^25.0.0",
     "tsup": "^8.0.0",
     "typescript": "^5.7.0",
